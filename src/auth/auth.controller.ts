@@ -23,6 +23,7 @@ export class AuthController {
         }
         const access_token = await this.authService.createToken(user);
         req.session.user = user;
+        req.session.token = access_token;
         return {
             message: 'Đăng nhập thành công',
             access_token, 
@@ -37,6 +38,7 @@ export class AuthController {
         const user = await this.authService.validateGoogleToken(body.googleToken);
         const access_token = await this.authService.createToken(user);
         req.session.user = user;
+        req.session.token = access_token;
         return { 
             message: 'Đăng nhập thành công',
             token: access_token, 
@@ -45,7 +47,7 @@ export class AuthController {
     }
 
     @Get('google')
-    @UseGuards(AuthGuard('google')) // Dùng GoogleStrategy
+    @UseGuards(AuthGuard('google')) 
     googleAuth() {}
     
     @Get('google/callback')
@@ -55,7 +57,5 @@ export class AuthController {
         req.session.user = req.user;
         return this.authService.createToken(user);
     }
-
-
     
 }
