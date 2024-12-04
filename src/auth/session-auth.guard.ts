@@ -10,11 +10,16 @@ export class SessionAuthGuard implements CanActivate {
     const authorization = request.headers['authorization'];
     if (authorization && authorization.startsWith('Bearer ')) {
       const token = authorization.split(' ')[1];
-      if (token !== request.session.token)
-      {
+      if (token === request.session.token){
+        return true;
+      }
+      else {
         throw new HttpException("Token không hợp lệ.", HttpStatus.UNAUTHORIZED);
       }
     }
-    return true;
+    else {
+        throw new HttpException("Token không tồn tại.", HttpStatus.UNAUTHORIZED);
+
+    }
   }
 }
