@@ -11,7 +11,7 @@ export class AuthController {
     ){}
 
     @Post('login')
-    async login(@Body() body: { key: string; password: string }, @Req() req) {
+    async login(@Body() body: { key: string; password: string }) {
         const { key, password } = body;
         const tryFindUser = await this.userService.findByUsername(key);
         if (!tryFindUser) {
@@ -22,8 +22,6 @@ export class AuthController {
           throw new HttpException('Mật khẩu không chính xác.', HttpStatus.UNAUTHORIZED);
         }
         const access_token = await this.authService.createToken(user);
-        req.session.user = user;
-        req.session.token = access_token;
         return {
             message: 'Đăng nhập thành công',
             access_token, 
@@ -33,12 +31,10 @@ export class AuthController {
 
    
     @Post('google')
-    async googleLogin(@Body() body: { googleToken: string}, @Req() req) {
+    async googleLogin(@Body() body: { googleToken: string}) {
         // Xác thực Google token và tạo JWT
         const user = await this.authService.validateGoogleToken(body.googleToken);
         const access_token = await this.authService.createToken(user);
-        req.session.user = user;
-        req.session.token = access_token;
         return { 
             message: 'Đăng nhập thành công',
             token: access_token, 

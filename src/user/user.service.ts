@@ -8,6 +8,7 @@ import { plainToClass } from 'class-transformer';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import * as moment from 'moment-timezone'; 
+import * as jwt from 'jsonwebtoken';
 
 
 @Injectable()
@@ -90,6 +91,15 @@ export class UserService {
         createdAt: moment.tz('Asia/Ho_Chi_Minh').format()
     }); 
     return this.UserRepository.save(user);
+  }
+
+  verifyToken(token: string) {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      return decoded; // Trả về payload đã giải mã
+    } catch (error) {
+      throw new HttpException("Token không hợp lệ.", HttpStatus.UNAUTHORIZED);
+    }
   }
 
 }

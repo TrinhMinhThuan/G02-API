@@ -6,7 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { GoogleStrategy } from './strategy/google.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
-import { SessionAuthGuard } from './session-auth.guard';
+import { AuthGuard } from './auth.guard';
 
 
 
@@ -19,7 +19,7 @@ import { SessionAuthGuard } from './session-auth.guard';
       signOptions: { expiresIn: '20m' },
     }),
   ],
-  providers: [AuthService, JwtStrategy, GoogleStrategy, SessionAuthGuard],
+  providers: [AuthService, JwtStrategy, GoogleStrategy, AuthGuard],
   controllers: [AuthController],
   exports: [AuthService],
 })

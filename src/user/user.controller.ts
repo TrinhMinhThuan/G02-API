@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, UseGuards,Req } from "@nestjs/common";
-import { SessionAuthGuard } from '../auth/session-auth.guard'
+import { Controller, Get, Post, Body, UseGuards, Req} from "@nestjs/common";
+import { AuthGuard } from '../auth/auth.guard'
 import { UserService } from "./user.service";
 import { RegisterUserDto } from "../dto/registerUser.dto";
 import { User } from './user.entity'
+import * as jwt from 'jsonwebtoken'
 
 @Controller('user') 
 export class UserController {
@@ -15,10 +16,14 @@ export class UserController {
         return await this.userService.registerUser(registerUserDto);
     }
 
-    @UseGuards(SessionAuthGuard)
+    @UseGuards(AuthGuard)
     @Get('/profile')
-    async getProfile(@Req() req): Promise<User | undefined> {
-        return req.session.user;
+    async getProfile(@Req() req) {        
+        const authorization = req.headers['authorization'];
+    
+        const token = authorization.split(' ')[1];
+        const user = this.userService.verifyToken(token) ;
+        return user;
     }
 
 }
