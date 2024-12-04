@@ -32,7 +32,7 @@ export class AuthController {
 
    
     @Post('google')
-    async googleLogin(@Body() body: { googleToken: string},@Req() req) {
+    async googleLogin(@Body() body: { googleToken: string}, @Req() req) {
         // Xác thực Google token và tạo JWT
         const user = await this.authService.validateGoogleToken(body.googleToken);
         const access_token = await this.authService.createToken(user);

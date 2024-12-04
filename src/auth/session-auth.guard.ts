@@ -1,9 +1,12 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, HttpException,HttpStatus } from '@nestjs/common';
 
 @Injectable()
 export class SessionAuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
-    return !!request.session.user;
+    if (!request.session || !request.session.user) {
+      throw new HttpException("Tài khoản không xác định.", HttpStatus.UNAUTHORIZED);
+    }
+    return true;
   }
 }

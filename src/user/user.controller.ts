@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body } from "@nestjs/common";
-
+import { Controller, Get, Post, Body, UseGuards,Req } from "@nestjs/common";
+import { SessionAuthGuard } from '../auth/session-auth.guard'
 import { UserService } from "./user.service";
-import { User } from './user.entity';
-import { RegisterUserDto } from "src/dto/registerUser.dto";
+import { RegisterUserDto } from "../dto/registerUser.dto";
+import { User } from './user.entity'
 
 @Controller('user') 
 export class UserController {
@@ -13,11 +13,12 @@ export class UserController {
     @Post('/register')
     async register(@Body() registerUserDto: RegisterUserDto) {
         return await this.userService.registerUser(registerUserDto);
-      }
+    }
 
-    @Get()
-    getHello(): string {
-        return "Hello from user!";
+    @UseGuards(SessionAuthGuard)
+    @Get('/profile')
+    async getProfile(@Req() req): Promise<User | undefined> {
+        return req.session.user;
     }
 
 }
